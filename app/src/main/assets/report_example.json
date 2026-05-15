@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "title": "Basura acumulada",
+  "description": "Hay basura en el parque principal",
+  "category": "Limpieza",
+  "priority": "Alta",
+  "status": "Pendiente",
+  "location": "Parque Central",
+  "date": "2026-05-14"
+}
