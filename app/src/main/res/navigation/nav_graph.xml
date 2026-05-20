@@ -2,7 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.jaddysgalvis.ui.splash.SplashFragment"
+        android:label="Splash" />
 
     <fragment
         android:id="@+id/homeFragment"
@@ -28,7 +33,5 @@
         android:id="@+id/editReportFragment"
         android:name="com.example.jaddysgalvis.ui.report.EditReportFragment"
         android:label="EditReportFragment" />
-
-
 
 </navigation>

@@ -34,11 +34,11 @@ class HomeFragment : Fragment() {
             false
         )
 
-        val btnReports =
-            view.findViewById<Button>(R.id.btnReports)
+        val cardReports =
+            view.findViewById<View>(R.id.cardReports)
 
-        val btnCreate =
-            view.findViewById<Button>(R.id.btnCreate)
+        val cardCreate =
+            view.findViewById<View>(R.id.cardCreate)
 
         val txtConnectionStatus =
             view.findViewById<TextView>(
@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
 
         // BOTÓN REPORTES
 
-        btnReports.setOnClickListener {
+        cardReports.setOnClickListener {
 
             findNavController().navigate(
                 R.id.reportsFragment
@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
 
         // BOTÓN CREAR
 
-        btnCreate.setOnClickListener {
+        cardCreate.setOnClickListener {
 
             findNavController().navigate(
                 R.id.createReportFragment
