@@ -27,8 +27,4 @@ class ReportViewModel(
             repository.deleteReport(report)
         }
     }
-
-    suspend fun getAllReports(): List<ReportEntity> {
-        return repository.getAllReports()
-    }
 }

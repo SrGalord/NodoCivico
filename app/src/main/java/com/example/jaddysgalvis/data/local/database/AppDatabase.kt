@@ -20,7 +20,6 @@ import com.example.jaddysgalvis.data.local.entity.UserEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun reportDao(): ReportDao
-
     abstract fun userDao(): UserDao
 
     companion object {
@@ -41,7 +40,6 @@ abstract class AppDatabase : RoomDatabase() {
                     .build()
 
                 INSTANCE = instance
-
                 instance
             }
         }

@@ -2,43 +2,51 @@ package com.example.jaddysgalvis.ui.report.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jaddysgalvis.R
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
+import com.example.jaddysgalvis.databinding.ItemReportBinding
 
 class ReportAdapter(
-
-    private var reports: List<ReportEntity>,
-
-    private val onDetailClick: (ReportEntity) -> Unit,
-
-    private val onEditClick: (ReportEntity) -> Unit,
-
-    private val onDeleteClick: (ReportEntity) -> Unit
-
+    private val onDetailClick: (ReportEntity) -> Unit
 ) : RecyclerView.Adapter<ReportAdapter.ReportViewHolder>() {
 
-    class ReportViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    private var reports: MutableList<ReportEntity> = mutableListOf()
 
-        val txtTitle: TextView =
-            itemView.findViewById(R.id.txtTitle)
+    inner class ReportViewHolder(
+        private val binding: ItemReportBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        val txtDescription: TextView =
-            itemView.findViewById(R.id.txtDescription)
+        fun bind(report: ReportEntity) {
 
-        val txtStatus: TextView =
-            itemView.findViewById(R.id.txtStatus)
+            binding.txtTitle.text = report.title
+            binding.txtDescription.text = report.description
+            binding.txtStatus.text = report.status
+            binding.txtPriority.text = report.priority
 
-        val btnEdit: Button =
-            itemView.findViewById(R.id.btnEdit)
+            // CLICK
+            binding.root.setOnClickListener {
+                onDetailClick(report)
+            }
 
-        val btnDelete: Button =
-            itemView.findViewById(R.id.btnDelete)
+            // COLOR STATUS
+            binding.txtStatus.setBackgroundColor(
+                when (report.status) {
+                    "Resuelto" -> Color.parseColor("#16A34A")
+                    "En proceso" -> Color.parseColor("#F59E0B")
+                    else -> Color.parseColor("#2563EB")
+                }
+            )
+
+            // COLOR PRIORIDAD
+            binding.txtPriority.setBackgroundColor(
+                when (report.priority) {
+                    "Alta" -> Color.parseColor("#DC2626")
+                    "Media" -> Color.parseColor("#F97316")
+                    else -> Color.parseColor("#16A34A")
+                }
+            )
+        }
     }
 
     override fun onCreateViewHolder(
@@ -46,87 +54,25 @@ class ReportAdapter(
         viewType: Int
     ): ReportViewHolder {
 
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_report, parent, false)
+        val binding = ItemReportBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
 
-        return ReportViewHolder(view)
+        return ReportViewHolder(binding)
     }
 
-    override fun onBindViewHolder(
-        holder: ReportViewHolder,
-        position: Int
-    ) {
-
-        val report = reports[position]
-
-        holder.txtTitle.text = report.title
-        holder.txtDescription.text = report.description
-        holder.txtStatus.text = report.status
-
-        when (report.status) {
-
-            "Pendiente" -> {
-
-                holder.txtStatus.setTextColor(
-                    Color.parseColor("#DC2626")
-                )
-
-                holder.txtStatus.setBackgroundColor(
-                    Color.parseColor("#FEE2E2")
-                )
-            }
-
-            "En proceso" -> {
-
-                holder.txtStatus.setTextColor(
-                    Color.parseColor("#D97706")
-                )
-
-                holder.txtStatus.setBackgroundColor(
-                    Color.parseColor("#FEF3C7")
-                )
-            }
-
-            "Resuelto" -> {
-
-                holder.txtStatus.setTextColor(
-                    Color.parseColor("#059669")
-                )
-
-                holder.txtStatus.setBackgroundColor(
-                    Color.parseColor("#D1FAE5")
-                )
-            }
-
-            else -> {
-
-                holder.txtStatus.setTextColor(Color.GRAY)
-            }
-        }
-
-        // DETALLE
-        holder.itemView.setOnClickListener {
-            onDetailClick(report)
-        }
-
-        // EDITAR
-        holder.btnEdit.setOnClickListener {
-            onEditClick(report)
-        }
-
-        // ELIMINAR
-        holder.btnDelete.setOnClickListener {
-            onDeleteClick(report)
-        }
+    override fun onBindViewHolder(holder: ReportViewHolder, position: Int) {
+        holder.bind(reports[position])
     }
 
-    override fun getItemCount(): Int {
-        return reports.size
-    }
+    override fun getItemCount(): Int = reports.size
 
-    fun updateData(newReports: List<ReportEntity>) {
+    fun updateData(newList: List<ReportEntity>) {
 
-        reports = newReports
+        reports.clear()
+        reports.addAll(newList)
 
         notifyDataSetChanged()
     }

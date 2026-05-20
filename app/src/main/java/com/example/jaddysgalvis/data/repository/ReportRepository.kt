@@ -4,34 +4,31 @@ import com.example.jaddysgalvis.data.local.dao.ReportDao
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
 import com.example.jaddysgalvis.data.remote.dto.ReportDto
 import com.example.jaddysgalvis.data.remote.retrofit.RetrofitClient
+import kotlinx.coroutines.flow.Flow
 
 class ReportRepository(
     private val reportDao: ReportDao
 ) {
 
-    // ROOM
+    // ROOM (LOCAL)
 
-    suspend fun getAllReports(): List<ReportEntity> {
-
+    fun getAllReports(): Flow<List<ReportEntity>> {
         return reportDao.getAllReports()
     }
 
     suspend fun insertReport(report: ReportEntity) {
-
         reportDao.insertReport(report)
     }
 
     suspend fun updateReport(report: ReportEntity) {
-
         reportDao.updateReport(report)
     }
 
     suspend fun deleteReport(report: ReportEntity) {
-
         reportDao.deleteReport(report)
     }
 
-    // API
+    // API (NO TOCAR)
 
     suspend fun getRemoteReports(): List<ReportDto>? {
 
@@ -39,18 +36,13 @@ class ReportRepository(
             RetrofitClient.api.getReports()
 
         return if (response.isSuccessful) {
-
             response.body()
-
         } else {
-
             null
         }
     }
 
-    suspend fun sendReportToApi(
-        reportDto: ReportDto
-    ): Boolean {
+    suspend fun sendReportToApi(reportDto: ReportDto): Boolean {
 
         val response =
             RetrofitClient.api.createReport(reportDto)

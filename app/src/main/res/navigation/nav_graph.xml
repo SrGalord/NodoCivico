@@ -4,34 +4,46 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/splashFragment">
 
+    <!-- SPLASH -->
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.example.jaddysgalvis.ui.splash.SplashFragment"
         android:label="Splash" />
 
+    <!-- LOGIN (NUEVO FLUJO) -->
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.jaddysgalvis.ui.home.HomeFragment"
-        android:label="Home" />
+        android:id="@+id/loginFragment"
+        android:name="com.example.jaddysgalvis.ui.login.LoginFragment"
+        android:label="Login" />
 
+    <!-- HOME / REPORTS -->
     <fragment
         android:id="@+id/reportsFragment"
         android:name="com.example.jaddysgalvis.ui.report.ReportListFragment"
         android:label="Reports" />
 
+    <!-- CREATE -->
     <fragment
         android:id="@+id/createReportFragment"
         android:name="com.example.jaddysgalvis.ui.report.CreateReportFragment"
         android:label="Create Report" />
 
+    <!-- DETAIL -->
     <fragment
         android:id="@+id/reportDetailFragment"
         android:name="com.example.jaddysgalvis.ui.report.ReportDetailFragment"
-        android:label="ReportDetailFragment" />
+        android:label="Report Detail" />
 
+    <!-- EDIT -->
     <fragment
         android:id="@+id/editReportFragment"
         android:name="com.example.jaddysgalvis.ui.report.EditReportFragment"
-        android:label="EditReportFragment" />
+        android:label="Edit Report" />
+
+    <!-- SETTINGS -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.jaddysgalvis.ui.settings.SettingsFragment"
+        android:label="Settings" />
 
 </navigation>
