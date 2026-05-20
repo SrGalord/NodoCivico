@@ -14,10 +14,7 @@ import com.example.jaddysgalvis.R
 import com.example.jaddysgalvis.data.local.database.AppDatabase
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
 import com.example.jaddysgalvis.databinding.FragmentReportListBinding
-
-// IMPORT CORRECTO
 import com.example.jaddysgalvis.ui.report.adapter.ReportAdapter
-
 import kotlinx.coroutines.launch
 
 class ReportListFragment : Fragment() {
@@ -49,8 +46,7 @@ class ReportListFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerReports.layoutManager =
-            LinearLayoutManager(requireContext())
+        setupRecycler()
 
         loadReports()
     }
@@ -62,84 +58,35 @@ class ReportListFragment : Fragment() {
         loadReports()
     }
 
+    private fun setupRecycler() {
+
+        binding.recyclerReports.layoutManager =
+            LinearLayoutManager(requireContext())
+    }
+
     private fun loadReports() {
 
-        binding.progressBar.visibility = View.VISIBLE
+        showLoading(true)
 
         lifecycleScope.launch {
 
             try {
 
-                val db = AppDatabase.getDatabase(requireContext())
+                val db =
+                    AppDatabase.getDatabase(requireContext())
 
-                val reports = db.reportDao().getAllReports()
+                val reports =
+                    db.reportDao().getAllReports()
 
-                binding.progressBar.visibility = View.GONE
+                showLoading(false)
 
-                if (reports.isEmpty()) {
+                updateEmptyState(reports)
 
-                    binding.recyclerReports.visibility = View.GONE
-                    binding.txtEmpty.visibility = View.VISIBLE
-
-                } else {
-
-                    binding.recyclerReports.visibility = View.VISIBLE
-                    binding.txtEmpty.visibility = View.GONE
-                }
-
-                adapter = ReportAdapter(
-
-                    reports = reports,
-
-                    // DETALLE
-                    onDetailClick = { report ->
-
-                        val bundle = Bundle().apply {
-
-                            putInt("id", report.id)
-                            putString("title", report.title)
-                            putString("description", report.description)
-                            putString("status", report.status)
-                            putString("category", report.category)
-                            putString("priority", report.priority)
-                            putString("location", report.location)
-                            putString("date", report.date)
-                        }
-
-                        findNavController().navigate(
-                            R.id.reportDetailFragment,
-                            bundle
-                        )
-                    },
-
-                    // EDITAR
-                    onEditClick = { report ->
-
-                        val bundle = Bundle().apply {
-
-                            putInt("id", report.id)
-                            putString("title", report.title)
-                            putString("description", report.description)
-                        }
-
-                        findNavController().navigate(
-                            R.id.editReportFragment,
-                            bundle
-                        )
-                    },
-
-                    // ELIMINAR
-                    onDeleteClick = { report ->
-
-                        showDeleteDialog(report)
-                    }
-                )
-
-                binding.recyclerReports.adapter = adapter
+                setupAdapter(reports)
 
             } catch (e: Exception) {
 
-                binding.progressBar.visibility = View.GONE
+                showLoading(false)
 
                 Toast.makeText(
                     requireContext(),
@@ -150,28 +97,133 @@ class ReportListFragment : Fragment() {
         }
     }
 
-    private fun showDeleteDialog(report: ReportEntity) {
+    private fun setupAdapter(
+        reports: List<ReportEntity>
+    ) {
+
+        adapter = ReportAdapter(
+
+            reports = reports,
+
+            // DETALLE
+            onDetailClick = { report ->
+
+                val bundle = Bundle().apply {
+
+                    putInt("id", report.id)
+                    putString("title", report.title)
+                    putString("description", report.description)
+                    putString("status", report.status)
+                    putString("category", report.category)
+                    putString("priority", report.priority)
+                    putString("location", report.location)
+                    putString("date", report.date)
+                }
+
+                findNavController().navigate(
+                    R.id.reportDetailFragment,
+                    bundle
+                )
+            },
+
+            // EDITAR
+            onEditClick = { report ->
+
+                val bundle = Bundle().apply {
+
+                    putInt("id", report.id)
+                    putString("title", report.title)
+                    putString("description", report.description)
+                }
+
+                findNavController().navigate(
+                    R.id.editReportFragment,
+                    bundle
+                )
+            },
+
+            // ELIMINAR
+            onDeleteClick = { report ->
+
+                showDeleteDialog(report)
+            }
+        )
+
+        binding.recyclerReports.adapter = adapter
+    }
+
+    private fun updateEmptyState(
+        reports: List<ReportEntity>
+    ) {
+
+        if (reports.isEmpty()) {
+
+            binding.recyclerReports.visibility =
+                View.GONE
+
+            binding.emptyContainer.visibility =
+                View.VISIBLE
+
+        } else {
+
+            binding.recyclerReports.visibility =
+                View.VISIBLE
+
+            binding.emptyContainer.visibility =
+                View.GONE
+        }
+    }
+
+    private fun showLoading(
+        isLoading: Boolean
+    ) {
+
+        binding.progressBar.visibility =
+
+            if (isLoading)
+                View.VISIBLE
+            else
+                View.GONE
+    }
+
+    private fun showDeleteDialog(
+        report: ReportEntity
+    ) {
 
         AlertDialog.Builder(requireContext())
             .setTitle("Eliminar reporte")
-            .setMessage("¿Deseas eliminar este reporte?")
+            .setMessage(
+                "¿Deseas eliminar este reporte?"
+            )
+
             .setPositiveButton("Sí") { _, _ ->
 
                 deleteReport(report)
             }
-            .setNegativeButton("Cancelar", null)
+
+            .setNegativeButton(
+                "Cancelar",
+                null
+            )
+
             .show()
     }
 
-    private fun deleteReport(report: ReportEntity) {
+    private fun deleteReport(
+        report: ReportEntity
+    ) {
 
         lifecycleScope.launch {
 
             try {
 
-                val db = AppDatabase.getDatabase(requireContext())
+                val db =
+                    AppDatabase.getDatabase(
+                        requireContext()
+                    )
 
-                db.reportDao().deleteReport(report)
+                db.reportDao()
+                    .deleteReport(report)
 
                 Toast.makeText(
                     requireContext(),

@@ -2,49 +2,87 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:background="#F5F7FA">
 
-    <!-- TÍTULO -->
+    <!-- HEADER -->
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reportes Comunitarios"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="14dp">
 
-    <!-- PROGRESS BAR -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reportes"
+            android:textColor="#111827"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Consulta reportes realizados por la comunidad"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- PROGRESS -->
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="20dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:visibility="gone" />
 
-    <!-- MENSAJE VACÍO -->
+    <!-- EMPTY STATE -->
 
-    <TextView
-        android:id="@+id/txtEmpty"
+    <LinearLayout
+        android:id="@+id/emptyContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No hay reportes registrados"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:layout_marginTop="30dp"/>
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="40dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📭"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/txtEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No hay reportes registrados"
+            android:textColor="#6B7280"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="14dp" />
+
+    </LinearLayout>
 
     <!-- RECYCLER -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerReports"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp" />
 
 </LinearLayout>

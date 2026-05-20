@@ -66,20 +66,40 @@ class ReportAdapter(
         when (report.status) {
 
             "Pendiente" -> {
-                holder.txtStatus.setTextColor(Color.RED)
+
+                holder.txtStatus.setTextColor(
+                    Color.parseColor("#DC2626")
+                )
+
+                holder.txtStatus.setBackgroundColor(
+                    Color.parseColor("#FEE2E2")
+                )
             }
 
             "En proceso" -> {
+
                 holder.txtStatus.setTextColor(
-                    Color.parseColor("#FFA000")
+                    Color.parseColor("#D97706")
+                )
+
+                holder.txtStatus.setBackgroundColor(
+                    Color.parseColor("#FEF3C7")
                 )
             }
 
             "Resuelto" -> {
-                holder.txtStatus.setTextColor(Color.GREEN)
+
+                holder.txtStatus.setTextColor(
+                    Color.parseColor("#059669")
+                )
+
+                holder.txtStatus.setBackgroundColor(
+                    Color.parseColor("#D1FAE5")
+                )
             }
 
             else -> {
+
                 holder.txtStatus.setTextColor(Color.GRAY)
             }
         }

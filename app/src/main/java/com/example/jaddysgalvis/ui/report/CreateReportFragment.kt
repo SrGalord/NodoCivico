@@ -4,17 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.jaddysgalvis.R
+import androidx.navigation.fragment.findNavController
 import com.example.jaddysgalvis.data.local.database.AppDatabase
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
 import com.example.jaddysgalvis.data.repository.ReportRepository
+import com.example.jaddysgalvis.databinding.FragmentCreateReportBinding
 import com.example.jaddysgalvis.viewmodel.ReportViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CreateReportFragment : Fragment() {
+
+    private var _binding: FragmentCreateReportBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var viewModel: ReportViewModel
 
@@ -24,70 +29,135 @@ class CreateReportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val view = inflater.inflate(R.layout.fragment_create_report, container, false)
+        _binding = FragmentCreateReportBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
-        val database = AppDatabase.getDatabase(requireContext())
-        val repository = ReportRepository(database.reportDao())
-        viewModel = ReportViewModel(repository)
+        setupViewModel()
 
-        val edtTitle = view.findViewById<EditText>(R.id.edtTitle)
-        val edtDescription = view.findViewById<EditText>(R.id.edtDescription)
+        setupListeners()
 
-        val btnSave = view.findViewById<Button>(R.id.btnSave)
+        return binding.root
+    }
 
-        btnSave.setOnClickListener {
+    private fun setupViewModel() {
 
-            val title = edtTitle.text.toString().trim()
-            val description = edtDescription.text.toString().trim()
+        val database =
+            AppDatabase.getDatabase(requireContext())
 
-            // VALIDACIONES
+        val repository =
+            ReportRepository(database.reportDao())
 
-            if (title.isEmpty()) {
-                edtTitle.error = "El título es obligatorio"
-                edtTitle.requestFocus()
-                return@setOnClickListener
-            }
+        viewModel =
+            ReportViewModel(repository)
+    }
 
-            if (title.length < 5) {
-                edtTitle.error = "Mínimo 5 caracteres"
-                edtTitle.requestFocus()
-                return@setOnClickListener
-            }
+    private fun setupListeners() {
 
-            if (description.isEmpty()) {
-                edtDescription.error = "La descripción es obligatoria"
-                edtDescription.requestFocus()
-                return@setOnClickListener
-            }
+        binding.btnSave.setOnClickListener {
 
-            if (description.length < 10) {
-                edtDescription.error = "La descripción debe tener mínimo 10 caracteres"
-                edtDescription.requestFocus()
-                return@setOnClickListener
-            }
+            createReport()
+        }
+    }
 
-            val report = ReportEntity(
-                title = title,
-                description = description,
-                category = "General",
-                priority = "Alta",
-                status = "Pendiente",
-                location = "Sin ubicación",
-                date = "14/05/2026"
-            )
+    private fun createReport() {
 
-            viewModel.insertReport(report)
+        val title =
+            binding.edtTitle.text.toString().trim()
 
-            Toast.makeText(
-                requireContext(),
-                "Reporte creado correctamente",
-                Toast.LENGTH_SHORT
-            ).show()
+        val description =
+            binding.edtDescription.text.toString().trim()
 
-            edtTitle.setText("")
-            edtDescription.setText("")
+        // VALIDACIONES
+
+        if (title.isEmpty()) {
+
+            binding.edtTitle.error =
+                "El título es obligatorio"
+
+            binding.edtTitle.requestFocus()
+
+            return
         }
 
-        return view
+        if (title.length < 5) {
+
+            binding.edtTitle.error =
+                "Mínimo 5 caracteres"
+
+            binding.edtTitle.requestFocus()
+
+            return
+        }
+
+        if (description.isEmpty()) {
+
+            binding.edtDescription.error =
+                "La descripción es obligatoria"
+
+            binding.edtDescription.requestFocus()
+
+            return
+        }
+
+        if (description.length < 10) {
+
+            binding.edtDescription.error =
+                "Mínimo 10 caracteres"
+
+            binding.edtDescription.requestFocus()
+
+            return
+        }
+
+        val currentDate = SimpleDateFormat(
+            "dd/MM/yyyy",
+            Locale.getDefault()
+        ).format(Date())
+
+        val report = ReportEntity(
+
+            title = title,
+
+            description = description,
+
+            category = "General",
+
+            priority = "Alta",
+
+            status = "Pendiente",
+
+            location = "Sin ubicación",
+
+            date = currentDate
+        )
+
+        viewModel.insertReport(report)
+
+        Toast.makeText(
+            requireContext(),
+            "Reporte creado correctamente",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        clearFields()
+
+        findNavController().navigateUp()
+    }
+
+    private fun clearFields() {
+
+        binding.edtTitle.setText("")
+
+        binding.edtDescription.setText("")
+    }
+
+    override fun onDestroyView() {
+
+        super.onDestroyView()
+
+        _binding = null
     }
 }
