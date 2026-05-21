@@ -1,89 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="6dp"
-    app:cardCornerRadius="22dp"
-    app:cardElevation="4dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="3dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E5E7EB"
     app:cardBackgroundColor="?android:colorBackgroundFloating">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="10dp">
 
-        <!-- TITULO -->
-
+        <!-- TITLE -->
         <TextView
             android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Título"
+            android:textStyle="bold"
+            android:textSize="14sp"
             android:textColor="?android:textColorPrimary"
-            android:textSize="19sp"
-            android:textStyle="bold"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <!-- DESCRIPCION -->
-
+        <!-- DESCRIPTION -->
         <TextView
             android:id="@+id/txtDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Descripción"
+            android:textSize="12sp"
             android:textColor="?android:textColorSecondary"
-            android:textSize="14sp"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <!-- CATEGORY -->
-
-        <TextView
-            android:id="@+id/txtCategory"
+        <!-- ROW STATUS + PRIORITY -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Categoría"
-            android:textColor="#94A3B8"
-            android:textSize="13sp"/>
-
-        <!-- BADGES -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
-
-            <!-- STATUS -->
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp">
 
             <TextView
                 android:id="@+id/txtStatus"
+                android:textSize="11sp"
+                android:textColor="#2563EB"
+                android:layout_marginEnd="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"
-                android:text="Estado"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="bold"/>
-
-            <!-- PRIORITY -->
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txtPriority"
+                android:textSize="11sp"
+                android:textColor="#F97316"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"
-                android:text="Prioridad"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="bold"/>
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

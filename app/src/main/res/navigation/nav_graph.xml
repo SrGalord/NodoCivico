@@ -2,54 +2,61 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/loginFragment">
+
+    <!-- LOGIN -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.jaddysgalvis.ui.login.LoginFragment"
+        android:label="Login">
+
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+
+        <action
+            android:id="@+id/action_loginFragment_to_reportsFragment"
+            app:destination="@id/reportsFragment" />
+    </fragment>
+
+    <!-- REGISTER -->
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.jaddysgalvis.ui.login.RegisterFragment"
+        android:label="Register" />
 
     <!-- SPLASH -->
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.jaddysgalvis.ui.splash.SplashFragment"
-        android:label="Splash" />
+        android:name="com.example.jaddysgalvis.ui.splash.SplashFragment" />
 
-    <!-- LOGIN (NUEVO FLUJO) -->
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.jaddysgalvis.ui.login.LoginFragment"
-        android:label="Login" />
-
-    <!-- HOME / REPORTS -->
+    <!-- REPORTS -->
     <fragment
         android:id="@+id/reportsFragment"
-        android:name="com.example.jaddysgalvis.ui.report.ReportListFragment"
-        android:label="Reports" />
+        android:name="com.example.jaddysgalvis.ui.report.ReportListFragment" />
 
     <!-- CREATE -->
     <fragment
         android:id="@+id/createReportFragment"
-        android:name="com.example.jaddysgalvis.ui.report.CreateReportFragment"
-        android:label="Create Report" />
+        android:name="com.example.jaddysgalvis.ui.report.CreateReportFragment" />
 
     <!-- DETAIL -->
     <fragment
         android:id="@+id/reportDetailFragment"
-        android:name="com.example.jaddysgalvis.ui.report.ReportDetailFragment"
-        android:label="Report Detail" />
+        android:name="com.example.jaddysgalvis.ui.report.ReportDetailFragment" />
 
-    <!-- EDIT -->
-    <fragment
-        android:id="@+id/editReportFragment"
-        android:name="com.example.jaddysgalvis.ui.report.EditReportFragment"
-        android:label="Edit Report" />
-
-    <!-- SETTINGS -->
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.jaddysgalvis.ui.settings.SettingsFragment"
-        android:label="Settings" />
-
+    <!-- PROFILE -->
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.jaddysgalvis.ui.profile.ProfileFragment"
-        android:label="Profile" />
+        android:name="com.example.jaddysgalvis.ui.profile.ProfileFragment" />
+
+    <fragment
+        android:id="@+id/userDashboardFragment"
+        android:name="com.example.jaddysgalvis.ui.dashboard.UserDashboardFragment" />
+
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.example.jaddysgalvis.ui.dashboard.AdminDashboardFragment" />
 
 
 </navigation>

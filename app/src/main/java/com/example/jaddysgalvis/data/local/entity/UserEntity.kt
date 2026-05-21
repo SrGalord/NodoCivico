@@ -11,5 +11,8 @@ data class UserEntity(
 
     val name: String,
     val email: String,
-    val password: String
+    val password: String,
+
+    // 🔥 NUEVO
+    val role: String // "ADMIN" | "USER"
 )

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/reportsFragment"
+        android:title="Reportes"
+        android:icon="@android:drawable/ic_menu_agenda"/>
+
+    <item
+        android:id="@+id/createReportFragment"
+        android:title="Crear"
+        android:icon="@android:drawable/ic_input_add"/>
+
+    <item
+        android:id="@+id/profileFragment"
+        android:title="Perfil"
+        android:icon="@android:drawable/ic_menu_myplaces"/>
+
+</menu>

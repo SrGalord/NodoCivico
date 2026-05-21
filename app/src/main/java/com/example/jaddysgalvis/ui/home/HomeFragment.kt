@@ -1,152 +1,67 @@
 package com.example.jaddysgalvis.ui.home
 
-import android.content.IntentFilter
-import android.graphics.Color
-import android.util.Log
-import androidx.lifecycle.lifecycleScope
-import com.example.jaddysgalvis.data.remote.retrofit.RetrofitClient
-import kotlinx.coroutines.launch
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.jaddysgalvis.R
-import com.example.jaddysgalvis.receiver.ConnectivityReceiver
+import com.example.jaddysgalvis.data.local.database.AppDatabase
+import com.example.jaddysgalvis.databinding.FragmentHomeBinding
+import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private lateinit var connectivityReceiver: ConnectivityReceiver
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val view = inflater.inflate(
-            R.layout.fragment_home,
-            container,
-            false
-        )
+        _binding = FragmentHomeBinding.bind(view)
 
-        val cardReports =
-            view.findViewById<View>(R.id.cardReports)
-
-        val cardCreate =
-            view.findViewById<View>(R.id.cardCreate)
-
-        val txtConnectionStatus =
-            view.findViewById<TextView>(
-                R.id.txtConnectionStatus
-            )
-
-        // BOTÓN REPORTES
-
-        cardReports.setOnClickListener {
-
-            findNavController().navigate(
-                R.id.reportsFragment
-            )
-        }
-
-        // BOTÓN CREAR
-
-        cardCreate.setOnClickListener {
-
-            findNavController().navigate(
-                R.id.createReportFragment
-            )
-        }
-
-        // RECEIVER
-
-        connectivityReceiver = ConnectivityReceiver()
-
-        // VERIFICAR ESTADO INICIAL
-
-        val connectivityManager =
-            requireContext().getSystemService(
-                ConnectivityManager::class.java
-            )
-
-        val activeNetwork =
-            connectivityManager.activeNetworkInfo
-
-        val isConnected =
-            activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting
-
-        if (isConnected) {
-
-            txtConnectionStatus.text = "🟢 Online"
-
-            txtConnectionStatus.setTextColor(
-                Color.GREEN
-            )
-
-        } else {
-
-            txtConnectionStatus.text = "🔴 Sin conexión"
-
-            txtConnectionStatus.setTextColor(
-                Color.RED
-            )
-        }
-
-        // REGISTRAR RECEIVER
-
-        requireContext().registerReceiver(
-            connectivityReceiver,
-            IntentFilter(
-                ConnectivityManager.CONNECTIVITY_ACTION
-            )
-        )
-
-        lifecycleScope.launch {
-
-            try {
-
-                val response =
-                    RetrofitClient.api.getReports()
-
-                if (response.isSuccessful) {
-
-                    Log.d(
-                        "API_TEST",
-                        response.body().toString()
-                    )
-
-                } else {
-
-                    Log.d(
-                        "API_TEST",
-                        "Error API"
-                    )
-                }
-
-            } catch (e: Exception) {
-
-                Log.d(
-                    "API_TEST",
-                    e.message.toString()
-                )
-            }
-        }
-
-        return view
+        loadStats()
+        setupButtons()
     }
 
-    override fun onDestroy() {
+    private fun setupButtons() {
 
-        super.onDestroy()
+        binding.btnViewReports.setOnClickListener {
+            findNavController().navigate(R.id.reportsFragment)
+        }
 
-        requireContext().unregisterReceiver(
-            connectivityReceiver
-        )
+        binding.btnCreate.setOnClickListener {
+            findNavController().navigate(R.id.createReportFragment)
+        }
+
+        binding.btnProfile.setOnClickListener {
+            findNavController().navigate(R.id.profileFragment)
+        }
+    }
+
+    private fun loadStats() {
+
+        val db = AppDatabase.getDatabase(requireContext())
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            db.reportDao().getAllReports().collect { reports ->
+
+                val total = reports.size
+                val pending = reports.count { it.status == "Pendiente" }
+                val process = reports.count { it.status == "En proceso" }
+                val solved = reports.count { it.status == "Resuelto" }
+
+                binding.txtTotal.text = total.toString()
+                binding.txtPending.text = pending.toString()
+                binding.txtProcess.text = process.toString()
+                binding.txtSolved.text = solved.toString()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

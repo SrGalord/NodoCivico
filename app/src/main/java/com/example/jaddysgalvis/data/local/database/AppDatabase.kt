@@ -14,7 +14,7 @@ import com.example.jaddysgalvis.data.local.entity.UserEntity
         ReportEntity::class,
         UserEntity::class
     ],
-    version = 3,
+    version = 5, // 🔥 IMPORTANTE: subido por cambios en schema
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -36,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "reports_db"
                 )
+                    // 🔥 borra datos viejos automáticamente en dev
                     .fallbackToDestructiveMigration()
                     .build()
 

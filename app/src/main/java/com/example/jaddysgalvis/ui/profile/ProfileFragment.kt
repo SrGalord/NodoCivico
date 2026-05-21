@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.jaddysgalvis.R
 import com.example.jaddysgalvis.data.local.database.AppDatabase
+import com.example.jaddysgalvis.data.session.SessionManager
 import com.example.jaddysgalvis.databinding.FragmentProfileBinding
 import kotlinx.coroutines.launch
 
@@ -18,13 +19,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentProfileBinding.bind(view)
 
         setupProfile()
         setupButtons()
         setupDarkMode()
+    }
+
+    // ---------------- PROFILE ----------------
+
+    private fun setupProfile() {
+
+        val db = AppDatabase.getDatabase(requireContext())
+
+        val role = SessionManager.getUserRole(requireContext())
+        val userId = SessionManager.getUserId(requireContext())
+
+        binding.txtName.text = if (role == "ADMIN") "Administrador" else "Usuario"
+        binding.txtEmail.text = if (role == "ADMIN") "admin@nodo.com" else "usuario@nodo.com"
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            db.reportDao().getAllReports().collect { reports ->
+
+                val filteredReports = if (role == "ADMIN") {
+                    reports
+                } else {
+                    reports.filter { it.userId == userId }
+                }
+
+                val total = filteredReports.size
+                val solved = filteredReports.count { it.status == "Resuelto" }
+
+                binding.txtReports.text = total.toString()
+                binding.txtSolved.text = solved.toString()
+            }
+        }
     }
 
     // ---------------- DARK MODE ----------------
@@ -37,7 +68,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val isDark = prefs.getBoolean("dark_mode", false)
 
         binding.switchDarkMode.setOnCheckedChangeListener(null)
-
         binding.switchDarkMode.isChecked = isDark
 
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
@@ -55,51 +85,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    // ---------------- PROFILE ----------------
-
-    private fun setupProfile() {
-
-        binding.txtName.text = "Administrador"
-
-        binding.txtEmail.text = "admin@nodo.com"
-
-        val db = AppDatabase.getDatabase(requireContext())
-
-        viewLifecycleOwner.lifecycleScope.launch {
-
-            db.reportDao().getAllReports().collect { reports ->
-
-                val total = reports.size
-
-                val solved = reports.count {
-                    it.status == "Resuelto"
-                }
-
-                binding.txtReports.text = total.toString()
-
-                binding.txtSolved.text = solved.toString()
-            }
-        }
-    }
-
     // ---------------- BUTTONS ----------------
 
     private fun setupButtons() {
 
         binding.btnLogout.setOnClickListener {
 
-            val prefs = requireActivity()
-                .getSharedPreferences("session", Context.MODE_PRIVATE)
-
-            prefs.edit()
-                .putBoolean("is_logged", false)
-                .apply()
+            SessionManager.clear(requireContext())
 
             findNavController().navigate(R.id.loginFragment)
         }
     }
-
-    // ---------------- DESTROY ----------------
 
     override fun onDestroyView() {
         super.onDestroyView()

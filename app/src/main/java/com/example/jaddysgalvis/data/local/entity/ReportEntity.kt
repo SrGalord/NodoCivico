@@ -15,5 +15,8 @@ data class ReportEntity(
     val priority: String,
     val status: String,
     val location: String,
-    val date: String
+    val date: String,
+
+    // 🔥 NUEVO
+    val userId: Int
 )

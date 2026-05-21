@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="?android:colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,133 +12,80 @@
         android:padding="24dp">
 
         <!-- HEADER -->
+        <TextView
+            android:text="👋 Bienvenido"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
+            android:text="Resumen general"
+            android:textColor="?android:textColorSecondary"
+            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nodo Cívico"
-            android:textColor="#111827"
-            android:textSize="34sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gestión inteligente de reportes comunitarios"
-            android:textColor="#6B7280"
-            android:textSize="15sp"
-            android:layout_marginTop="6dp" />
-
-        <!-- CARD INTERNET -->
-
-        <androidx.cardview.widget.CardView
+        <!-- STATS -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="4dp">
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+            <TextView android:id="@+id/txtTotal"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Estado de conexión"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="#111827" />
+            <TextView android:text="Total reportes"/>
 
-                <TextView
-                    android:id="@+id/txtConnectionStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Verificando..."
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp" />
+            <TextView android:id="@+id/txtPending"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
 
-            </LinearLayout>
+            <TextView android:text="Pendientes"/>
 
-        </androidx.cardview.widget.CardView>
+            <TextView android:id="@+id/txtProcess"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
 
-        <!-- BOTÓN REPORTES -->
+            <TextView android:text="En proceso"/>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardReports"
+            <TextView android:id="@+id/txtSolved"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <TextView android:text="Resueltos"/>
+        </LinearLayout>
+
+        <!-- BOTONES -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewReports"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp"
-            app:strokeWidth="0dp">
+            android:text="Ver reportes"
+            android:layout_marginTop="30dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp"
-                android:background="#2563EB">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📋 Ver reportes"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Consulta reportes creados por la comunidad"
-                    android:textColor="#DCE7FF"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- BOTÓN CREAR -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardCreate"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp">
+            android:text="Crear reporte"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp"
-                android:background="#10B981">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="➕ Crear reporte"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Genera un nuevo reporte ciudadano"
-                    android:textColor="#D1FAE5"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Perfil"/>
 
     </LinearLayout>
 

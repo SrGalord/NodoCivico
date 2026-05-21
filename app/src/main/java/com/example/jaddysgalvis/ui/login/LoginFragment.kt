@@ -1,13 +1,15 @@
 package com.example.jaddysgalvis.ui.login
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.jaddysgalvis.R
+import com.example.jaddysgalvis.data.local.database.AppDatabase
+import com.example.jaddysgalvis.data.session.SessionManager
 import com.example.jaddysgalvis.databinding.FragmentLoginBinding
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -20,36 +22,52 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         _binding = FragmentLoginBinding.bind(view)
 
         setupLogin()
+        setupRegister()
     }
 
     private fun setupLogin() {
 
         binding.btnLogin.setOnClickListener {
 
-            val user = binding.edtUser.text.toString().trim()
+            // 🔥 ahora puede ser email o nombre
+            val input = binding.edtUser.text.toString().trim()
             val pass = binding.edtPassword.text.toString().trim()
 
-            if (user.isEmpty() || pass.isEmpty()) {
+            if (input.isEmpty() || pass.isEmpty()) {
                 binding.edtUser.error = "Campo requerido"
                 binding.edtPassword.error = "Campo requerido"
                 return@setOnClickListener
             }
 
-            // LOGIN SIMPLE (FAKE LOGIN)
-            if (user == "admin" && pass == "1234") {
+            val db = AppDatabase.getDatabase(requireContext())
 
-                val prefs = requireActivity()
-                    .getSharedPreferences("session", Context.MODE_PRIVATE)
+            lifecycleScope.launch {
 
-                prefs.edit()
-                    .putBoolean("is_logged", true)
-                    .apply()
+                val user = db.userDao().loginUser(input, pass)
 
-                findNavController().navigate(R.id.reportsFragment)
+                if (user != null) {
 
-            } else {
-                binding.edtPassword.error = "Contraseña incorrecta"
+                    SessionManager.saveUser(
+                        requireContext(),
+                        user.id,
+                        user.role
+                    )
+
+                    println("LOGIN OK -> ${user.name} | ROLE: ${user.role}")
+
+                    findNavController().navigate(R.id.reportsFragment)
+
+                } else {
+                    binding.edtPassword.error = "Credenciales incorrectas"
+                }
             }
+        }
+    }
+
+    private fun setupRegister() {
+
+        binding.btnRegister.setOnClickListener {
+            findNavController().navigate(R.id.registerFragment)
         }
     }
 

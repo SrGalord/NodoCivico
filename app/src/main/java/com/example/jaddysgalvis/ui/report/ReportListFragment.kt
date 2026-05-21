@@ -8,10 +8,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.jaddysgalvis.R
 import com.example.jaddysgalvis.data.local.database.AppDatabase
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
+import com.example.jaddysgalvis.data.session.SessionManager
 import com.example.jaddysgalvis.databinding.FragmentReportListBinding
 import com.example.jaddysgalvis.ui.report.adapter.ReportAdapter
 import kotlinx.coroutines.launch
@@ -22,25 +25,20 @@ class ReportListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var reportList: List<ReportEntity> = emptyList()
-
     private var adapter: ReportAdapter? = null
+
+    private var currentFilter: String = "ALL"
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding =
-            FragmentReportListBinding.inflate(inflater, container, false)
-
+        _binding = FragmentReportListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -48,7 +46,19 @@ class ReportListFragment : Fragment() {
         setupAdapter()
         setupSearch()
         setupButtons()
+        setupToggleButtons()
+        setupSwipeToDelete()
         observeReports()
+    }
+
+    // ---------------- SESSION ----------------
+
+    private fun getUserId(): Int {
+        return SessionManager.getUserId(requireContext())
+    }
+
+    private fun getUserRole(): String {
+        return SessionManager.getUserRole(requireContext())
     }
 
     // ---------------- BUTTONS ----------------
@@ -60,17 +70,30 @@ class ReportListFragment : Fragment() {
         }
 
         binding.fabAddReport.setOnClickListener {
+            findNavController().navigate(R.id.createReportFragment)
+        }
+    }
 
-            findNavController().navigate(
-                R.id.createReportFragment
-            )
+    // ---------------- TOGGLE ----------------
+
+    private fun setupToggleButtons() {
+
+        binding.toggleReports.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            currentFilter = when (checkedId) {
+                R.id.btnMyReports -> "MY"
+                R.id.btnCommunityReports -> "COMMUNITY"
+                else -> "ALL"
+            }
+
+            applyFilters()
         }
     }
 
     // ---------------- RECYCLER ----------------
 
     private fun setupRecycler() {
-
         binding.recyclerReports.layoutManager =
             LinearLayoutManager(requireContext())
     }
@@ -82,7 +105,6 @@ class ReportListFragment : Fragment() {
         adapter = ReportAdapter { report ->
 
             val bundle = Bundle().apply {
-
                 putInt("id", report.id)
                 putString("title", report.title)
                 putString("description", report.description)
@@ -109,38 +131,57 @@ class ReportListFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
 
-                override fun onQueryTextSubmit(query: String?): Boolean {
-
-                    filterReports(query.orEmpty())
-
-                    return true
+                override fun onQueryTextSubmit(query: String?) = true.also {
+                    applyFilters(query.orEmpty())
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-
-                    filterReports(newText.orEmpty())
-
-                    return true
+                override fun onQueryTextChange(newText: String?) = true.also {
+                    applyFilters(newText.orEmpty())
                 }
             }
         )
     }
 
-    private fun filterReports(text: String) {
+    // ---------------- FILTER CORE ----------------
 
-        val filtered = reportList.filter {
+    private fun applyFilters(searchText: String = "") {
 
-            it.title.contains(text, true) ||
-                    it.description.contains(text, true)
+        val role = getUserRole()
+        val userId = getUserId()
+
+        var list = reportList
+
+        // 🔥 ROLE FILTER
+        list = if (role == "USER") {
+            list.filter { it.userId == userId }
+        } else {
+            list
         }
 
-        adapter?.updateData(filtered)
+        // 🔥 TAB FILTER
+        list = when (currentFilter) {
 
-        updateEmptyState(filtered)
-        updateDashboard(filtered)
+            "MY" -> list.filter { it.userId == userId }
+
+            "COMMUNITY" -> if (role == "ADMIN") list else list.filter { it.userId == userId }
+
+            else -> list
+        }
+
+        // 🔍 SEARCH
+        if (searchText.isNotEmpty()) {
+            list = list.filter {
+                it.title.contains(searchText, true) ||
+                        it.description.contains(searchText, true)
+            }
+        }
+
+        adapter?.updateData(list)
+        updateEmptyState(list)
+        updateDashboard(list)
     }
 
-    // ---------------- FLOW ROOM ----------------
+    // ---------------- ROOM ----------------
 
     private fun observeReports() {
 
@@ -153,30 +194,54 @@ class ReportListFragment : Fragment() {
                 if (_binding == null) return@collect
 
                 reportList = reports
-
-                adapter?.updateData(reports)
-
-                updateEmptyState(reports)
-                updateDashboard(reports)
+                applyFilters()
             }
         }
     }
 
-    // ---------------- EMPTY STATE ----------------
+    // ---------------- SWIPE DELETE ----------------
 
-    private fun updateEmptyState(
-        reports: List<ReportEntity>
-    ) {
+    private fun setupSwipeToDelete() {
 
-        if (_binding == null) return
+        if (getUserRole() != "ADMIN") return
+
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int
+            ) {
+
+                val report = reportList[viewHolder.bindingAdapterPosition]
+
+                lifecycleScope.launch {
+                    val db = AppDatabase.getDatabase(requireContext())
+                    db.reportDao().deleteReport(report)
+                }
+            }
+        }
+
+        ItemTouchHelper(swipeCallback)
+            .attachToRecyclerView(binding.recyclerReports)
+    }
+
+    // ---------------- EMPTY ----------------
+
+    private fun updateEmptyState(reports: List<ReportEntity>) {
 
         if (reports.isEmpty()) {
-
             binding.recyclerReports.visibility = View.GONE
             binding.emptyContainer.visibility = View.VISIBLE
-
         } else {
-
             binding.recyclerReports.visibility = View.VISIBLE
             binding.emptyContainer.visibility = View.GONE
         }
@@ -184,35 +249,16 @@ class ReportListFragment : Fragment() {
 
     // ---------------- DASHBOARD ----------------
 
-    private fun updateDashboard(
-        reports: List<ReportEntity>
-    ) {
+    private fun updateDashboard(reports: List<ReportEntity>) {
 
-        if (_binding == null) return
-
-        val total = reports.size
-
-        val pendiente =
-            reports.count { it.status == "Pendiente" }
-
-        val proceso =
-            reports.count { it.status == "En proceso" }
-
-        val resuelto =
-            reports.count { it.status == "Resuelto" }
-
-        binding.txtTotal.text = "Total\n$total"
-        binding.txtPendiente.text = "Pend\n$pendiente"
-        binding.txtProceso.text = "Proc\n$proceso"
-        binding.txtResuelto.text = "OK\n$resuelto"
+        binding.txtTotal.text = "Total\n${reports.size}"
+        binding.txtPendiente.text = "Pend\n${reports.count { it.status == "Pendiente" }}"
+        binding.txtProceso.text = "Proc\n${reports.count { it.status == "En proceso" }}"
+        binding.txtResuelto.text = "OK\n${reports.count { it.status == "Resuelto" }}"
     }
 
-    // ---------------- DESTROY ----------------
-
     override fun onDestroyView() {
-
         super.onDestroyView()
-
         _binding = null
     }
 }

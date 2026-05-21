@@ -9,8 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.jaddysgalvis.data.local.database.AppDatabase
 import com.example.jaddysgalvis.data.local.entity.ReportEntity
+import com.example.jaddysgalvis.data.session.SessionManager
 import com.example.jaddysgalvis.databinding.FragmentEditReportBinding
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class EditReportFragment : Fragment() {
 
@@ -18,6 +22,7 @@ class EditReportFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var reportId: Int = 0
+    private var currentUserId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,11 +31,11 @@ class EditReportFragment : Fragment() {
     ): View {
 
         _binding = FragmentEditReportBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         reportId = arguments?.getInt("id") ?: 0
@@ -38,8 +43,10 @@ class EditReportFragment : Fragment() {
         binding.etTitle.setText(arguments?.getString("title"))
         binding.etDescription.setText(arguments?.getString("description"))
 
-        binding.btnUpdate.setOnClickListener {
+        // 🔥 USER REAL DE SESIÓN
+        currentUserId = SessionManager.getUserId(requireContext())
 
+        binding.btnUpdate.setOnClickListener {
             updateReport()
         }
     }
@@ -49,68 +56,50 @@ class EditReportFragment : Fragment() {
         val title = binding.etTitle.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
 
-        // VALIDACIONES
-
         if (title.isEmpty()) {
             binding.etTitle.error = "El título es obligatorio"
-            binding.etTitle.requestFocus()
-            return
-        }
-
-        if (title.length < 5) {
-            binding.etTitle.error = "Mínimo 5 caracteres"
-            binding.etTitle.requestFocus()
             return
         }
 
         if (description.isEmpty()) {
             binding.etDescription.error = "La descripción es obligatoria"
-            binding.etDescription.requestFocus()
-            return
-        }
-
-        if (description.length < 10) {
-            binding.etDescription.error =
-                "La descripción debe tener mínimo 10 caracteres"
-            binding.etDescription.requestFocus()
             return
         }
 
         lifecycleScope.launch {
 
-            try {
+            val db = AppDatabase.getDatabase(requireContext())
 
-                val db = AppDatabase.getDatabase(requireContext())
+            val currentDate = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm",
+                Locale.getDefault()
+            ).format(Date())
 
-                val updatedReport = ReportEntity(
-                    id = reportId,
-                    title = title,
-                    description = description,
-                    category = "General",
-                    priority = "Media",
-                    status = "Pendiente",
-                    location = "Sin ubicación",
-                    date = "14/05/2026"
-                )
+            val updatedReport = ReportEntity(
+                id = reportId,
+                title = title,
+                description = description,
 
-                db.reportDao().updateReport(updatedReport)
+                category = arguments?.getString("category") ?: "General",
+                priority = arguments?.getString("priority") ?: "Media",
+                status = arguments?.getString("status") ?: "Pendiente",
+                location = arguments?.getString("location") ?: "Sin ubicación",
 
-                Toast.makeText(
-                    requireContext(),
-                    "Reporte actualizado correctamente",
-                    Toast.LENGTH_SHORT
-                ).show()
+                date = currentDate,
 
-                parentFragmentManager.popBackStack()
+                // 🔥 YA ES INT (CORRECTO)
+                userId = currentUserId
+            )
 
-            } catch (e: Exception) {
+            db.reportDao().updateReport(updatedReport)
 
-                Toast.makeText(
-                    requireContext(),
-                    "Error al actualizar el reporte",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            Toast.makeText(
+                requireContext(),
+                "Reporte actualizado correctamente",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            parentFragmentManager.popBackStack()
         }
     }
 
