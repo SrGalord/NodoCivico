@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="?android:colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nuevo Reporte"
-            android:textColor="#111827"
+            android:textColor="?android:textColorPrimary"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -27,18 +27,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Registra un problema comunitario"
-            android:textColor="#6B7280"
+            android:textColor="?android:textColorSecondary"
             android:textSize="15sp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="28dp" />
 
-        <!-- CARD FORM -->
+        <!-- CARD -->
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="24dp"
-            app:cardElevation="5dp">
+            app:cardElevation="5dp"
+            app:cardBackgroundColor="?android:colorBackgroundFloating">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,6 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Título del reporte"
+                    app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="18dp"
                     app:boxCornerRadiusBottomStart="18dp"
                     app:boxCornerRadiusTopEnd="18dp"
@@ -60,8 +62,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtTitle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1" />
+                        android:layout_height="wrap_content"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,8 +71,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="Describe el problema"
+                    android:layout_marginTop="18dp"
+                    android:hint="Descripción"
+                    app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="18dp"
                     app:boxCornerRadiusBottomStart="18dp"
                     app:boxCornerRadiusTopEnd="18dp"
@@ -80,10 +82,79 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtDescription"
                         android:layout_width="match_parent"
-                        android:layout_height="140dp"
+                        android:layout_height="120dp"
                         android:gravity="top"
-                        android:inputType="textMultiLine"
-                        android:paddingTop="14dp" />
+                        android:inputType="textMultiLine"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- CATEGORY -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:hint="Categoría"
+                    app:endIconMode="dropdown_menu"
+                    app:boxBackgroundMode="outline">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- PRIORITY -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:hint="Prioridad"
+                    app:endIconMode="dropdown_menu"
+                    app:boxBackgroundMode="outline">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoPriority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- STATUS -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:hint="Estado"
+                    app:endIconMode="dropdown_menu"
+                    app:boxBackgroundMode="outline">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- LOCATION -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:hint="Ubicación"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,13 +163,14 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSave"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginTop="28dp"
-                    android:paddingVertical="14dp"
                     android:text="Crear reporte"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    app:cornerRadius="18dp" />
+                    android:textStyle="bold"
+                    app:cornerRadius="18dp"
+                    app:backgroundTint="#2563EB"/>
 
             </LinearLayout>
 

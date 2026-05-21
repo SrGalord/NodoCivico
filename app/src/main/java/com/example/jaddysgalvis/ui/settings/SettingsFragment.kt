@@ -12,17 +12,29 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private lateinit var switchDarkMode: Switch
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
+
         super.onViewCreated(view, savedInstanceState)
 
-        switchDarkMode = view.findViewById(R.id.switchDarkMode)
+        if (!isAdded) return
+
+        switchDarkMode =
+            view.findViewById(R.id.switchDarkMode)
 
         val prefs = requireActivity()
-            .getSharedPreferences("settings", Context.MODE_PRIVATE)
+            .getSharedPreferences(
+                "settings",
+                Context.MODE_PRIVATE
+            )
 
-        val isDark = prefs.getBoolean("dark_mode", false)
+        val isDark =
+            prefs.getBoolean("dark_mode", false)
 
         switchDarkMode.setOnCheckedChangeListener(null)
+
         switchDarkMode.isChecked = isDark
 
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
@@ -31,12 +43,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 .putBoolean("dark_mode", isChecked)
                 .apply()
 
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked)
-                    AppCompatDelegate.MODE_NIGHT_YES
-                else
-                    AppCompatDelegate.MODE_NIGHT_NO
-            )
+            requireActivity().runOnUiThread {
+
+                AppCompatDelegate.setDefaultNightMode(
+                    if (isChecked)
+                        AppCompatDelegate.MODE_NIGHT_YES
+                    else
+                        AppCompatDelegate.MODE_NIGHT_NO
+                )
+            }
         }
     }
 }

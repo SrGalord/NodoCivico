@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -37,10 +38,14 @@ class CreateReportFragment : Fragment() {
 
         setupViewModel()
 
+        setupDropdowns()
+
         setupListeners()
 
         return binding.root
     }
+
+    // ---------------- VIEWMODEL ----------------
 
     private fun setupViewModel() {
 
@@ -54,6 +59,63 @@ class CreateReportFragment : Fragment() {
             ReportViewModel(repository)
     }
 
+    // ---------------- DROPDOWNS ----------------
+
+    private fun setupDropdowns() {
+
+        val categories = listOf(
+            "General",
+            "Basura",
+            "Seguridad",
+            "Alumbrado",
+            "Transporte"
+        )
+
+        val priorities = listOf(
+            "Alta",
+            "Media",
+            "Baja"
+        )
+
+        val status = listOf(
+            "Pendiente",
+            "En proceso",
+            "Resuelto"
+        )
+
+        binding.autoCategory.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                categories
+            )
+        )
+
+        binding.autoPriority.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                priorities
+            )
+        )
+
+        binding.autoStatus.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                status
+            )
+        )
+
+        // VALORES POR DEFECTO
+
+        binding.autoCategory.setText("General", false)
+        binding.autoPriority.setText("Media", false)
+        binding.autoStatus.setText("Pendiente", false)
+    }
+
+    // ---------------- LISTENERS ----------------
+
     private fun setupListeners() {
 
         binding.btnSave.setOnClickListener {
@@ -61,6 +123,8 @@ class CreateReportFragment : Fragment() {
             createReport()
         }
     }
+
+    // ---------------- CREATE REPORT ----------------
 
     private fun createReport() {
 
@@ -70,7 +134,19 @@ class CreateReportFragment : Fragment() {
         val description =
             binding.edtDescription.text.toString().trim()
 
-        // VALIDACIONES
+        val category =
+            binding.autoCategory.text.toString().trim()
+
+        val priority =
+            binding.autoPriority.text.toString().trim()
+
+        val status =
+            binding.autoStatus.text.toString().trim()
+
+        val location =
+            binding.edtLocation.text.toString().trim()
+
+        // ---------------- VALIDACIONES ----------------
 
         if (title.isEmpty()) {
 
@@ -112,10 +188,24 @@ class CreateReportFragment : Fragment() {
             return
         }
 
+        if (location.isEmpty()) {
+
+            binding.edtLocation.error =
+                "La ubicación es obligatoria"
+
+            binding.edtLocation.requestFocus()
+
+            return
+        }
+
+        // ---------------- FECHA ----------------
+
         val currentDate = SimpleDateFormat(
             "dd/MM/yyyy",
             Locale.getDefault()
         ).format(Date())
+
+        // ---------------- ENTITY ----------------
 
         val report = ReportEntity(
 
@@ -123,16 +213,18 @@ class CreateReportFragment : Fragment() {
 
             description = description,
 
-            category = "General",
+            category = category,
 
-            priority = "Alta",
+            priority = priority,
 
-            status = "Pendiente",
+            status = status,
 
-            location = "Sin ubicación",
+            location = location,
 
             date = currentDate
         )
+
+        // ---------------- SAVE ----------------
 
         viewModel.insertReport(report)
 
@@ -147,12 +239,24 @@ class CreateReportFragment : Fragment() {
         findNavController().navigateUp()
     }
 
+    // ---------------- CLEAR ----------------
+
     private fun clearFields() {
 
         binding.edtTitle.setText("")
 
         binding.edtDescription.setText("")
+
+        binding.edtLocation.setText("")
+
+        binding.autoCategory.setText("General", false)
+
+        binding.autoPriority.setText("Media", false)
+
+        binding.autoStatus.setText("Pendiente", false)
     }
+
+    // ---------------- DESTROY ----------------
 
     override fun onDestroyView() {
 

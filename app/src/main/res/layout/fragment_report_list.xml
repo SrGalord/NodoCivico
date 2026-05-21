@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="?android:colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <!-- HEADER -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,18 +24,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reportes"
-                android:textColor="#111827"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Dashboard de reportes"
-                android:textColor="#6B7280"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp" />
+
         </LinearLayout>
+
+        <!-- PROGRESS -->
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -42,82 +46,135 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:indeterminate="true"/>
+            android:indeterminate="true" />
 
+        <!-- DASHBOARD -->
 
-        <!-- DASHBOARD STATS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="12dp"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="8dp"
             android:weightSum="4">
 
-            <TextView
-                android:id="@+id/txtTotal"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Total\n0"
-                android:textColor="#FFFFFF"
-                android:background="#111827"
-                android:textStyle="bold"/>
+            <!-- TOTAL -->
 
-            <TextView
-                android:id="@+id/txtPendiente"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="Pend\n0"
-                android:textColor="#FFFFFF"
-                android:background="#2563EB"
-                android:textStyle="bold"/>
+                android:layout_margin="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#111827">
 
-            <TextView
-                android:id="@+id/txtProceso"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Proc\n0"
-                android:textColor="#FFFFFF"
-                android:background="#F59E0B"
-                android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Total\n0"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txtResuelto"
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- PENDIENTE -->
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="OK\n0"
-                android:textColor="#FFFFFF"
-                android:background="#16A34A"
-                android:textStyle="bold"/>
+                android:layout_margin="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#2563EB">
+
+                <TextView
+                    android:id="@+id/txtPendiente"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Pend\n0"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- PROCESO -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#F59E0B">
+
+                <TextView
+                    android:id="@+id/txtProceso"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Proc\n0"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- RESUELTO -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#16A34A">
+
+                <TextView
+                    android:id="@+id/txtResuelto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="OK\n0"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
 
         <!-- SEARCH -->
+
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:background="@android:color/white"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:colorBackgroundFloating"
             android:elevation="3dp"
+            android:padding="4dp"
             android:queryHint="Buscar reportes..." />
 
         <!-- RECYCLER -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerReports"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="10dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            android:paddingHorizontal="6dp"
+            android:paddingBottom="100dp" />
 
-        <!-- EMPTY -->
+        <!-- EMPTY STATE -->
+
         <LinearLayout
             android:id="@+id/emptyContainer"
             android:layout_width="match_parent"
@@ -128,41 +185,46 @@
             android:visibility="gone">
 
             <TextView
-                android:text="📭"
-                android:textSize="50sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="📭"
+                android:textSize="54sp" />
 
             <TextView
                 android:id="@+id/txtEmpty"
-                android:text="No hay reportes"
-                android:textSize="16sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="No hay reportes"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- FAB SETTINGS -->
+    <!-- SETTINGS FAB -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:layout_gravity="bottom|start"
+        android:layout_margin="20dp"
         android:src="@android:drawable/ic_menu_manage"
-        app:backgroundTint="#111827"/>
+        app:backgroundTint="#475569"
+        app:tint="#FFFFFF" />
 
-    <!-- FAB ADD -->
+    <!-- ADD FAB -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#2563EB"/>
+        app:backgroundTint="#2563EB"
+        app:tint="#FFFFFF" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

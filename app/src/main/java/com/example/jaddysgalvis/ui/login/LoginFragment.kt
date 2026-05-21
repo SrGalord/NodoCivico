@@ -30,7 +30,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             val pass = binding.edtPassword.text.toString().trim()
 
             if (user.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(requireContext(), "Completa los campos", Toast.LENGTH_SHORT).show()
+                binding.edtUser.error = "Campo requerido"
+                binding.edtPassword.error = "Campo requerido"
                 return@setOnClickListener
             }
 
@@ -47,7 +48,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 findNavController().navigate(R.id.reportsFragment)
 
             } else {
-                Toast.makeText(requireContext(), "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                binding.edtPassword.error = "Contraseña incorrecta"
             }
         }
     }
