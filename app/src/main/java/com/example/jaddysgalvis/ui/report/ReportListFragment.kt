@@ -56,10 +56,7 @@ class ReportListFragment : Fragment() {
     private fun setupButtons() {
 
         binding.fabSettings.setOnClickListener {
-
-            findNavController().navigate(
-                R.id.settingsFragment
-            )
+            findNavController().navigate(R.id.profileFragment)
         }
 
         binding.fabAddReport.setOnClickListener {

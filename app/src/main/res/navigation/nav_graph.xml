@@ -46,4 +46,10 @@
         android:name="com.example.jaddysgalvis.ui.settings.SettingsFragment"
         android:label="Settings" />
 
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.jaddysgalvis.ui.profile.ProfileFragment"
+        android:label="Profile" />
+
+
 </navigation>
