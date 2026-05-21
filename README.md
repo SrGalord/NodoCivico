@@ -1,56 +1,117 @@
-# Nodo Cívico
+# 📱 Nodo Cívico
 
-Aplicación móvil Android orientada a la gestión de reportes ciudadanos, seguimiento comunitario y acciones coordinadas de microgestión urbana.
-
-## Descripción
-
-Nodo Cívico permite a los usuarios registrar situaciones de su entorno, consultar reportes comunitarios y realizar seguimiento a cada caso mediante una interfaz moderna y organizada.
-
-La aplicación está diseñada bajo una arquitectura limpia utilizando componentes modernos de Android y un enfoque offline-first.
+Aplicación móvil Android para la gestión de reportes ciudadanos, con roles de usuario y administrador, seguimiento de casos y panel de control estadístico.
 
 ---
 
-# Objetivos del proyecto
+## 🚀 Descripción
 
-- Registrar reportes ciudadanos.
-- Consultar reportes comunitarios.
-- Dar seguimiento a casos reportados.
-- Gestionar recordatorios y alertas.
-- Permitir funcionamiento offline.
-- Sincronizar información con una API REST.
+**Nodo Cívico** permite a los ciudadanos registrar reportes sobre su entorno (seguridad, alumbrado, basura, vías, etc.), hacer seguimiento del estado de los mismos y visualizar información comunitaria.
 
----
+La aplicación incluye un sistema de autenticación básico, manejo de sesiones locales y separación de roles:
 
-# Tecnologías utilizadas
-
-- Kotlin
-- Android Studio
-- MVVM Architecture
-- Navigation Component
-- Fragments
-- RecyclerView
-- Room Database
-- Retrofit
-- Material Design
+- 👤 **Usuario:** crea y consulta sus propios reportes.
+- 🛠️ **Administrador:** visualiza todos los reportes y estadísticas globales.
 
 ---
 
-# Arquitectura
+## 🎯 Funcionalidades principales
 
-El proyecto está organizado utilizando arquitectura MVVM:
+- Registro e inicio de sesión de usuarios.
+- Sesiones locales con `SharedPreferences`.
+- Creación, edición y eliminación de reportes.
+- Clasificación por categoría, prioridad y estado.
+- Filtrado de reportes (Mis reportes / Comunidad).
+- Panel de usuario con estadísticas personales.
+- Panel de administrador con estadísticas globales.
+- Sistema de roles (USER / ADMIN).
+- Persistencia local con Room Database.
+- Navegación entre pantallas con Navigation Component.
+- Interfaz moderna con Material Design.
 
-## Estructura principal
+---
 
-```text
-data/
- ├── local/
- ├── remote/
- ├── repository/
+🗄️ Base de datos (Room)
+Tabla users
+id
+name
+email
+password
+role
+Tabla reports
+id
+title
+description
+category
+priority
+status
+location
+date
+userId
 
-ui/
- ├── fragments/
- ├── adapters/
+🔐 Sistema de autenticación
 
-viewmodel/
+Login con email y contraseña.
+Validación local contra Room.
+Persistencia de sesión con SharedPreferences.
+Control de acceso por rol.
 
-utils/
+🧑‍💼 Roles del sistema
+
+👤 USER
+Crear reportes.
+Ver solo sus propios reportes.
+Ver estadísticas personales.
+🛠️ ADMIN
+
+Ver todos los reportes.
+Eliminar reportes.
+Acceder a estadísticas globales.
+Visualizar usuarios activos.
+
+📊 Dashboards
+Usuario
+Total de reportes creados.
+Reportes resueltos personales.
+Administrador
+Total de reportes globales.
+Total de usuarios.
+Reportes por estado (Pendiente, En proceso, Resuelto).
+
+🧩 Tecnologías usadas
+Kotlin
+Android Studio
+Room Database
+Navigation Component
+Fragments
+RecyclerView
+Material Design Components
+Coroutines
+SharedPreferences
+
+🧪 Estado del proyecto
+
+✔ Funcional en modo local (offline)
+✔ Sistema de roles implementado
+✔ CRUD de reportes completo
+✔ UI moderna en Material Design
+⚠ Puede mejorarse con API REST y login real
+
+📌 Posibles mejoras futuras
+Backend con Spring Boot o Firebase
+Notificaciones push
+Geolocalización de reportes
+Mapa de reportes
+Chat o comentarios por reporte
+Seguridad avanzada (JWT / OAuth)
+
+👨‍💻 Autor
+Desarrollado como proyecto educativo para práctica de:
+
+Arquitectura Android
+Persistencia local
+Navegación entre fragments
+Gestión de estados y roles
+
+data/session/
+ └── SessionManager.kt
